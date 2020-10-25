@@ -1,0 +1,62 @@
+<!-- Популярные товары -->
+<div class="popular">
+	<h3 style="margin-left:30px;">Рекомендуемые</h3>
+	{* Рекомендуемые товары *}
+	{get_featured_products var=featured_products order='RAND()' limit=2}
+	{if $featured_products}
+		<!-- Список товаров-->
+		<ul>
+		{foreach $featured_products as $product_pop}
+			<!-- Товар-->
+			<li class="product">
+
+				<!-- Фото товара -->
+				{if $product_pop->image}
+				<div class="image">
+					   {*variant_image*}
+					   {if $product_pop->variant->image}
+						   <a href="products/{$product_pop->url}"><img src="{$product_pop->variant->image|resize_variant:200:200}" alt="{$product_pop->name|escape}" /><span class="more">Подробнее</span></a>
+					   {elseif $product_pop->image}
+						   <a href="products/{$product_pop->url}"><img src="{$product_pop->image->filename|resize:200:200}" alt="{$product_pop->name|escape}" /><span class="more">Подробнее</span></a>
+					   {/if}
+					   {*<a href="products/{$product_pop->url}"><img src="{$product_pop->image->filename|resize:200:200}" alt="{$product_pop->name|escape}"/><span class="more">Подробнее</span></a>*}
+					   {*/variant_image*}
+					   {if $product_pop->variant->compare_price}
+						   <span class="sale">- {round(($product_pop->variant->compare_price - $product_pop->variant->price)/$product_pop->variant->compare_price*100)} %</span>
+					   {/if}
+				</div>
+				{/if}
+				<!-- Фото товара (The End) -->
+
+				{if $product_pop->variant}
+				<!-- Выбор варианта товара -->
+				<form class="variants" action="/cart">
+					   <div class="variant">
+						<input id="featured_{$product_pop->variant->id}" name="variant" value="{$product_pop->variant->id}" type="hidden" />
+
+						{if $product_pop->variant->name}<label class="variant_name" for="featured_{$product_pop->variant->id}">{$product_pop->variant->name}</label>{/if}
+
+						<span class="price">{$product_pop->variant->price|convert} <span class="currency">{$currency->sign|escape}</span></span>{if $product_pop->variant->compare_price > 0}
+
+						<span class="compare_price">{$product_pop->variant->compare_price|convert}</span>{/if}
+					   </div>
+				</form>
+				<!-- Выбор варианта товара (The End) -->
+				<!-- Название товара -->
+				<div class="title_wr">
+				<a data-product="{$product_pop->id}" href="products/{$product_pop->url}" class="title">{$product_pop->name|escape} </a>
+				</div>
+				<!-- Название товара (The End) -->
+				<div class="annotation">{$product_pop->annotation|truncate:120}</div>
+				<div class="buttonWrap">
+				<a data-product="{$product_pop->id}" href="products/{$product_pop->url}" class="button">Подробнее</a>
+				</div>
+				{else}
+					Нет в наличии
+				{/if}
+			</li>
+			<!-- Товар (The End)-->
+			{/foreach}
+		</ul>
+	{/if}
+</div>
